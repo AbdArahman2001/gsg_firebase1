@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "253581741734",
+    "project_id": "gsg-first-project",
+    "storage_bucket": "gsg-first-project.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:253581741734:android:61e6ffca337a5b8ea3ee67",
+        "android_client_info": {
+          "package_name": "com.example.gsg_firebase1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "253581741734-f989q0o52ok5m68b00coelhp8ccm8m80.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBtLfo2_u4Exw1L2Wlz6HW95kMtZTexISE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "253581741734-f989q0o52ok5m68b00coelhp8ccm8m80.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
