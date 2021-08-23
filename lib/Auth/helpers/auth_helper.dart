@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:gsg_firebase1/Auth/helpers/router_helper.dart';
 import 'package:gsg_firebase1/Auth/ui/widgets/custom_dialog.dart';
 import 'package:gsg_firebase1/statics/statics.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AuthHelper {
   AuthHelper._();
@@ -9,10 +10,11 @@ class AuthHelper {
   static final authHelper = AuthHelper._();
   FirebaseAuth auth = FirebaseAuth.instance;
 
-  signUp(String email, String password) async {
+  Future<UserCredential> signUp(String email, String password) async {
     try {
       UserCredential userCredential = await auth.createUserWithEmailAndPassword(
           email: email, password: password);
+      return userCredential;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         CustomDialog.customDialog
@@ -30,12 +32,13 @@ class AuthHelper {
     }
   }
 
-  signIn(String email, String password) async {
+  Future<UserCredential> signIn(String email, String password) async {
     try {
       UserCredential userCredential = await auth.signInWithEmailAndPassword(
           email: email, password: password);
       print('uid: ${userCredential.user.uid}');
       print('get id token: ${await userCredential.user.getIdToken()}');
+      return userCredential;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         CustomDialog.customDialog

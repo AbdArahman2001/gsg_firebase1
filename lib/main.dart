@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:gsg_firebase1/Auth/helpers/router_helper.dart';
@@ -31,7 +32,15 @@ class MyApp extends StatelessWidget {
                     return Center(child: Text(snapShot.error.toString()));
                   }
                   if (snapShot.connectionState == ConnectionState.done) {
-                    return AuthScreen();
+                    if (FirebaseAuth.instance.currentUser == null ||
+                        FirebaseAuth.instance.currentUser.emailVerified ==
+                            false) {
+                      return AuthScreen();
+                    } else {
+                      Provider.of<AuthProvider>(ctx, listen: false)
+                          .getAllUsers();
+                      return HomePageScreen();
+                    }
                   }
                   return Center(child: CircularProgressIndicator());
                 }),

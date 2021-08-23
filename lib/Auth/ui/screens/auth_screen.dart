@@ -18,56 +18,82 @@ class _AuthScreenState extends State<AuthScreen> {
       return Scaffold(
         backgroundColor: Colors.blue,
         body: Center(
-          child: Card(
-            elevation: 10,
-            margin: EdgeInsets.symmetric(horizontal: 30),
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: EdgeInsets.only(top: 8, left: 8, right: 8, bottom: 24),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CustomTextField(authProvider.emailController, 'Email'),
-                    CustomTextField(
-                        authProvider.passwordController, 'Password'),
-                    Visibility(
-                      visible: authProvider.loginState == LoginState.signUp,
-                      child: CustomTextField(
-                          authProvider.confirmPasswordController,
-                          'Confirm Password'),
-                    ),
-                    Visibility(
-                        visible: authProvider.loginState == LoginState.signIn,
-                        child: TextButton(
-                            onPressed: authProvider.resetPassword,
-                            child: Text('forget password?'))),
-                    ElevatedButton(
-                        style: ButtonStyle(
-                            padding: MaterialStateProperty.resolveWith(
-                              (states) => EdgeInsets.symmetric(
-                                  vertical: 4, horizontal: 24),
-                            ),
-                            shape: MaterialStateProperty.resolveWith((states) =>
-                                RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(50)))),
-                        onPressed: () {
-                          authProvider.authenticate();
-                        },
-                        child: Text(
-                          authProvider.loginState == LoginState.signUp
-                              ? 'SIGN UP'
-                              : 'LOGIN',
-                        )),
-                    TextButton(
-                        onPressed: authProvider.switchLoginState,
-                        child: Text(
-                            (authProvider.loginState == LoginState.signUp
-                                    ? 'LOGIN'
-                                    : 'SIGN UP') +
-                                ' INSTEAD')),
-                  ],
+          child: Container(
+            height: authProvider.loginState == LoginState.signUp
+                ? MediaQuery.of(context).size.height * 0.75
+                : MediaQuery.of(context).size.height * 0.5,
+            child: Card(
+              elevation: 10,
+              margin: EdgeInsets.symmetric(horizontal: 30),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12)),
+              child: SingleChildScrollView(
+                child: Container(
+                  padding:
+                      EdgeInsets.only(top: 8, left: 8, right: 8, bottom: 24),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CustomTextField(authProvider.emailController, 'Email'),
+                      CustomTextField(
+                          authProvider.passwordController, 'Password'),
+                      Visibility(
+                        visible: authProvider.loginState == LoginState.signUp,
+                        child: CustomTextField(
+                            authProvider.confirmPasswordController,
+                            'Confirm Password'),
+                      ),
+                      Visibility(
+                          visible: authProvider.loginState == LoginState.signUp,
+                          child: CustomTextField(
+                              authProvider.fNameController, 'first Name')),
+                      Visibility(
+                        visible: authProvider.loginState == LoginState.signUp,
+                        child: CustomTextField(
+                            authProvider.lNameController, 'last Name'),
+                      ),
+                      Visibility(
+                        visible: authProvider.loginState == LoginState.signUp,
+                        child: CustomTextField(
+                            authProvider.countryController, 'country'),
+                      ),
+                      Visibility(
+                        visible: authProvider.loginState == LoginState.signUp,
+                        child: CustomTextField(
+                            authProvider.cityController, 'city'),
+                      ),
+                      Visibility(
+                          visible: authProvider.loginState == LoginState.signIn,
+                          child: TextButton(
+                              onPressed: authProvider.resetPassword,
+                              child: Text('forget password?'))),
+                      ElevatedButton(
+                          style: ButtonStyle(
+                              padding: MaterialStateProperty.resolveWith(
+                                (states) => EdgeInsets.symmetric(
+                                    vertical: 4, horizontal: 24),
+                              ),
+                              shape: MaterialStateProperty.resolveWith(
+                                  (states) => RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(50)))),
+                          onPressed: () {
+                            authProvider.authenticate();
+                          },
+                          child: Text(
+                            authProvider.loginState == LoginState.signUp
+                                ? 'SIGN UP'
+                                : 'LOGIN',
+                          )),
+                      TextButton(
+                          onPressed: authProvider.switchLoginState,
+                          child: Text(
+                              (authProvider.loginState == LoginState.signUp
+                                      ? 'LOGIN'
+                                      : 'SIGN UP') +
+                                  ' INSTEAD')),
+                    ],
+                  ),
                 ),
               ),
             ),
