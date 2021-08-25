@@ -15,6 +15,12 @@ class UserInfoCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Container(
+                child: FadeInImage(
+                    placeholder:
+                        ExactAssetImage('assets/images/placeHolder.png'),
+                    image: NetworkImage(userModel.imageUrl)),
+              ),
               singleInfoRow('First Name: ', userModel.fName),
               singleInfoRow('Last Name: ', userModel.lName),
               singleInfoRow('E-mail: ', userModel.email),

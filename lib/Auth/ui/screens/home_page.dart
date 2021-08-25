@@ -13,13 +13,15 @@ class HomePageScreen extends StatelessWidget {
       return Scaffold(
         body: Container(
           margin: EdgeInsets.symmetric(vertical: 24, horizontal: 12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              ...authProvider.users
-                  .map((userModel) => UserInfoCard(userModel))
-                  .toList(),
-            ],
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                ...authProvider.users
+                    .map((userModel) => UserInfoCard(userModel))
+                    .toList(),
+              ],
+            ),
           ),
         ),
         floatingActionButton: Container(

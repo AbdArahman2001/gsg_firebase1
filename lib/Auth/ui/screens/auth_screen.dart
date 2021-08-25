@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:gsg_firebase1/Auth/models/country_model.dart';
 import 'package:gsg_firebase1/Auth/providers/auth_provider.dart';
 import 'package:gsg_firebase1/Auth/ui/widgets/custom_text_field.dart';
 import 'package:provider/provider.dart';
@@ -34,6 +37,18 @@ class _AuthScreenState extends State<AuthScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      GestureDetector(
+                        onTap: authProvider.pickImage,
+                        child: Container(
+                          width: MediaQuery.of(context).size.width * 0.5,
+                          height: MediaQuery.of(context).size.height * 0.3,
+                          child: authProvider.pickedImage != null
+                              ? Image.file(authProvider.pickedImage)
+                              : Container(
+                                  color: Colors.grey,
+                                ),
+                        ),
+                      ),
                       CustomTextField(authProvider.emailController, 'Email'),
                       CustomTextField(
                           authProvider.passwordController, 'Password'),
@@ -53,15 +68,41 @@ class _AuthScreenState extends State<AuthScreen> {
                             authProvider.lNameController, 'last Name'),
                       ),
                       Visibility(
-                        visible: authProvider.loginState == LoginState.signUp,
-                        child: CustomTextField(
-                            authProvider.countryController, 'country'),
-                      ),
+                          visible: authProvider.loginState == LoginState.signUp,
+                          child: Container(
+                            margin: EdgeInsets.symmetric(
+                                vertical: 8, horizontal: 12),
+                            padding: EdgeInsets.symmetric(
+                                vertical: 8, horizontal: 12),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(color: Colors.grey)),
+                            child: DropdownButton<CountryModel>(
+                              isExpanded: true,
+                              underline: Container(),
+                              onChanged: authProvider.selectCountry,
+                              value: authProvider.selectedCountry,
+                              items: authProvider.countries
+                                  .map((CountryModel country) {
+                                return DropdownMenuItem<CountryModel>(
+                                  value: country,
+                                  child: Text(country.name),
+                                );
+                              }).toList(),
+                            ),
+                          )),
                       Visibility(
-                        visible: authProvider.loginState == LoginState.signUp,
-                        child: CustomTextField(
-                            authProvider.cityController, 'city'),
-                      ),
+                          visible: authProvider.loginState == LoginState.signUp,
+                          child: DropdownButton(
+                            onChanged: authProvider.selectCity,
+                            value: authProvider.selectedCity,
+                            items: authProvider.selectedCities.map((city) {
+                              return DropdownMenuItem(
+                                value: city.toString(),
+                                child: Text(city.toString()),
+                              );
+                            }).toList(),
+                          )),
                       Visibility(
                           visible: authProvider.loginState == LoginState.signIn,
                           child: TextButton(

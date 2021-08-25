@@ -2,13 +2,16 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gsg_firebase1/Auth/helpers/auth_helper.dart';
 import 'package:gsg_firebase1/Auth/helpers/fire_store_helper.dart';
+import 'package:gsg_firebase1/Auth/helpers/firebase_storage_helper.dart';
 import 'package:gsg_firebase1/Auth/helpers/router_helper.dart';
+import 'package:gsg_firebase1/Auth/models/country_model.dart';
 import 'package:gsg_firebase1/Auth/models/friestore_register.dart';
 import 'package:gsg_firebase1/Auth/models/user_model.dart';
-import 'dart:developer';
-
 import 'package:gsg_firebase1/Auth/ui/widgets/custom_dialog.dart';
 import 'package:gsg_firebase1/statics/statics.dart';
+import 'dart:io';
+
+import 'package:image_picker/image_picker.dart';
 
 enum LoginState {
   signUp,
@@ -20,13 +23,22 @@ class AuthProvider extends ChangeNotifier {
   TextEditingController passwordController = TextEditingController();
   TextEditingController fNameController = TextEditingController();
   TextEditingController lNameController = TextEditingController();
-  TextEditingController countryController = TextEditingController();
-  TextEditingController cityController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
   AuthHelper authHelper = AuthHelper.authHelper;
   String response = 'gg';
   LoginState loginState = LoginState.signUp;
   List<UserModel> users = [];
+  List<CountryModel> countries = [];
+  CountryModel selectedCountry;
+  List selectedCities = [];
+  String selectedCity;
+  File pickedImage;
+  String imageUrl;
+
+  AuthProvider() {
+    getAllCountries();
+  }
+
   authenticate() async {
     loginState == LoginState.signUp ? await signUp() : await signIn();
   }
@@ -37,10 +49,21 @@ class AuthProvider extends ChangeNotifier {
     } else {
       try {
         UserCredential userCredential = await authHelper.signUp(
-            emailController.text, passwordController.text);
+            emailController.text.replaceAll(' ', ''), passwordController.text);
+        await uploadFile();
+        FirestoreRegister firestoreRegister = FirestoreRegister(
+            id: userCredential.user.uid,
+            email: emailController.text.replaceAll(' ', ''),
+            fName: fNameController.text,
+            lName: lNameController.text,
+            city: selectedCity,
+            country: selectedCountry.name,
+            imageUrl: imageUrl);
+        await FirestoreHelper.fireStoreHelper
+            .addUserToFirestore(firestoreRegister);
         await sendVerificationEmailAndSignOut();
-        resetControllers();
         switchLoginState();
+        resetControllers();
       } catch (e) {
         CustomDialog.customDialog.showCustomDialog('Error when sign up: $e');
       }
@@ -48,16 +71,8 @@ class AuthProvider extends ChangeNotifier {
   }
 
   Future<void> signIn() async {
-    UserCredential userCredential =
-        await authHelper.signIn(emailController.text, passwordController.text);
-    FirestoreRegister firestoreRegister = FirestoreRegister(
-        id: userCredential.user.uid,
-        email: emailController.text,
-        fName: fNameController.text,
-        lName: lNameController.text,
-        city: cityController.text,
-        country: countryController.text);
-    await FirestoreHelper.fireStoreHelper.addUserToFirestore(firestoreRegister);
+    UserCredential userCredential = await authHelper.signIn(
+        emailController.text.replaceAll(' ', ''), passwordController.text);
     await FirestoreHelper.fireStoreHelper
         .getUserFromFirestore(userCredential.user.uid);
     if (authHelper.checkEmailVerified()) {
@@ -90,12 +105,10 @@ class AuthProvider extends ChangeNotifier {
     confirmPasswordController.clear();
     fNameController.clear();
     lNameController.clear();
-    countryController.clear();
-    cityController.clear();
   }
 
   resetPassword() async {
-    await authHelper.resetPassword(emailController.text);
+    await authHelper.resetPassword(emailController.text.replaceAll(' ', ''));
   }
 
   sendVerificationEmailAndSignOut() async {
@@ -106,5 +119,39 @@ class AuthProvider extends ChangeNotifier {
   getAllUsers() async {
     users = await FirestoreHelper.fireStoreHelper.getAllUsers();
     notifyListeners();
+  }
+
+  getAllCountries() async {
+    countries = await FirestoreHelper.fireStoreHelper.getCountriesCollection();
+    selectCountry(countries.first);
+    selectCity(selectedCities.first);
+    notifyListeners();
+  }
+
+  selectCountry(CountryModel countryModel) {
+    this.selectedCountry = countryModel;
+    selectedCities = countryModel.cities;
+    selectCity(selectedCities.first);
+    notifyListeners();
+  }
+
+  selectCity(String city) {
+    this.selectedCity = city.toString();
+    notifyListeners();
+  }
+
+  pickImage() async {
+    try {
+      XFile image = await ImagePicker().pickImage(source: ImageSource.gallery);
+      pickedImage = File(image.path);
+    } catch (e) {
+      print(e);
+    }
+    notifyListeners();
+  }
+
+  uploadFile() async {
+    imageUrl = await FirebaseStorageHelper.firebaseStorageHelper
+        .uploadFile(pickedImage);
   }
 }
