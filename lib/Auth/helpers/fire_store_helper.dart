@@ -18,9 +18,11 @@ class FirestoreHelper {
         .set(HashMap.from(firestoreRegister.toMap()));
   }
 
-  getUserFromFirestore(String id) async {
+  Future<UserModel> getUserFromFirestore(String id) async {
     DocumentSnapshot info =
         await firebaseFirestore.collection('Users').doc(id).get();
+    UserModel userModel = UserModel.fromMap(info.data());
+    return userModel;
     print('user data: ${info.data()}');
   }
 

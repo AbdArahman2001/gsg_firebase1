@@ -3,7 +3,9 @@ import 'package:gsg_firebase1/Auth/models/user_model.dart';
 
 class UserInfoCard extends StatelessWidget {
   final UserModel userModel;
+
   UserInfoCard(this.userModel);
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -21,19 +23,25 @@ class UserInfoCard extends StatelessWidget {
                         ExactAssetImage('assets/images/placeHolder.png'),
                     image: NetworkImage(userModel.imageUrl)),
               ),
-              singleInfoRow('First Name: ', userModel.fName),
-              singleInfoRow('Last Name: ', userModel.lName),
-              singleInfoRow('E-mail: ', userModel.email),
-              singleInfoRow('Country: ', userModel.country),
-              singleInfoRow('City: ', userModel.city),
+              SingleInfoRow('First Name: ', userModel.fName),
+              SingleInfoRow('Last Name: ', userModel.lName),
+              SingleInfoRow('E-mail: ', userModel.email),
+              SingleInfoRow('Country: ', userModel.country),
+              SingleInfoRow('City: ', userModel.city),
             ],
           ),
         ),
       ),
     );
   }
+}
 
-  Widget singleInfoRow(String field, String value) {
+class SingleInfoRow extends StatelessWidget {
+  final String field;
+  final String value;
+  SingleInfoRow(this.field, this.value);
+  @override
+  Widget build(BuildContext context) {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(

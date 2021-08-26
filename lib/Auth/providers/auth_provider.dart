@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:gsg_firebase1/Auth/helpers/auth_helper.dart';
 import 'package:gsg_firebase1/Auth/helpers/fire_store_helper.dart';
@@ -34,6 +35,7 @@ class AuthProvider extends ChangeNotifier {
   String selectedCity;
   File pickedImage;
   String imageUrl;
+  UserModel currentUser;
 
   AuthProvider() {
     getAllCountries();
@@ -153,5 +155,12 @@ class AuthProvider extends ChangeNotifier {
   uploadFile() async {
     imageUrl = await FirebaseStorageHelper.firebaseStorageHelper
         .uploadFile(pickedImage);
+  }
+
+  getCurrentUser() async {
+    currentUser = await FirestoreHelper.fireStoreHelper
+        .getUserFromFirestore(FirebaseAuth.instance.currentUser.uid);
+
+    notifyListeners();
   }
 }
