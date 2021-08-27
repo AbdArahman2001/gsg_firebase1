@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:gsg_firebase1/Auth/helpers/router_helper.dart';
 import 'package:gsg_firebase1/Auth/providers/auth_provider.dart';
 import 'package:gsg_firebase1/Auth/ui/screens/auth_screen.dart';
+import 'package:gsg_firebase1/Auth/ui/screens/edit_profile.dart';
 import 'package:gsg_firebase1/Auth/ui/screens/home_page.dart';
+import 'package:gsg_firebase1/Auth/ui/screens/splash_screen.dart';
 import 'package:gsg_firebase1/statics/statics.dart';
 import 'package:provider/provider.dart';
 
@@ -32,15 +34,7 @@ class MyApp extends StatelessWidget {
                     return Center(child: Text(snapShot.error.toString()));
                   }
                   if (snapShot.connectionState == ConnectionState.done) {
-                    if (FirebaseAuth.instance.currentUser == null ||
-                        FirebaseAuth.instance.currentUser.emailVerified ==
-                            false) {
-                      return AuthScreen();
-                    } else {
-                      Provider.of<AuthProvider>(ctx, listen: false)
-                          .getAllUsers();
-                      return HomePageScreen();
-                    }
+                    return CustomSplashScreen();
                   }
                   return Center(child: CircularProgressIndicator());
                 }),
@@ -48,6 +42,7 @@ class MyApp extends StatelessWidget {
           routes: {
             statics.authScreenRoute: (ctx) => AuthScreen(),
             statics.homePageScreenRoute: (ctx) => HomePageScreen(),
+            statics.editProfileRoute: (ctx) => EditProfile(),
           },
         );
       },

@@ -30,4 +30,13 @@ class UserModel {
       imageUrl: map['imageUrl'],
     );
   }
+  Map toMap() {
+    return {
+      'fName': this.fName,
+      'lName': this.lName,
+      'country': this.country,
+      'city': this.city,
+      'imageUrl': this.imageUrl
+    };
+  }
 }

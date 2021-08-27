@@ -25,6 +25,8 @@ class AuthProvider extends ChangeNotifier {
   TextEditingController fNameController = TextEditingController();
   TextEditingController lNameController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
+  TextEditingController countryController = TextEditingController();
+  TextEditingController cityController = TextEditingController();
   AuthHelper authHelper = AuthHelper.authHelper;
   String response = 'gg';
   LoginState loginState = LoginState.signUp;
@@ -35,8 +37,9 @@ class AuthProvider extends ChangeNotifier {
   String selectedCity;
   File pickedImage;
   String imageUrl;
-  UserModel currentUser;
-
+  UserModel currentUserFromFirestore;
+  User currentUser;
+  bool isUpdatingProfile = false;
   AuthProvider() {
     getAllCountries();
   }
@@ -91,6 +94,8 @@ class AuthProvider extends ChangeNotifier {
 
   signOut() async {
     await authHelper.signOut();
+    resetControllers();
+    pickedImage = null;
     RouterHelper.router.goReplacementPage(Statics.statics.authScreenRoute);
   }
 
@@ -107,6 +112,8 @@ class AuthProvider extends ChangeNotifier {
     confirmPasswordController.clear();
     fNameController.clear();
     lNameController.clear();
+    countryController.clear();
+    cityController.clear();
   }
 
   resetPassword() async {
@@ -157,10 +164,45 @@ class AuthProvider extends ChangeNotifier {
         .uploadFile(pickedImage);
   }
 
-  getCurrentUser() async {
-    currentUser = await FirestoreHelper.fireStoreHelper
+  getCurrentUserFromFirestore() async {
+    currentUserFromFirestore = await FirestoreHelper.fireStoreHelper
         .getUserFromFirestore(FirebaseAuth.instance.currentUser.uid);
 
+    notifyListeners();
+  }
+
+  getCurrentUser() async {
+    currentUser = await authHelper.getCurrentUser();
+  }
+
+  fillControllers() {
+    fNameController.text = currentUserFromFirestore.fName;
+    lNameController.text = currentUserFromFirestore.lName;
+    countryController.text = currentUserFromFirestore.country;
+    cityController.text = currentUserFromFirestore.city;
+    notifyListeners();
+  }
+
+  editProfile() async {
+    isUpdatingProfile = true;
+    if (pickedImage != null) {
+      await uploadFile();
+    } else {
+      imageUrl = currentUserFromFirestore.imageUrl;
+    }
+
+    await getCurrentUser();
+    UserModel userModel = UserModel(
+        id: currentUser.uid,
+        email: currentUserFromFirestore.email,
+        fName: fNameController.text,
+        lName: lNameController.text,
+        city: cityController.text,
+        country: countryController.text,
+        imageUrl: imageUrl);
+    await FirestoreHelper.fireStoreHelper.updateProfile(userModel);
+    await getCurrentUserFromFirestore();
+    isUpdatingProfile = false;
     notifyListeners();
   }
 }

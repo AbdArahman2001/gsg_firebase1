@@ -23,7 +23,6 @@ class FirestoreHelper {
         await firebaseFirestore.collection('Users').doc(id).get();
     UserModel userModel = UserModel.fromMap(info.data());
     return userModel;
-    print('user data: ${info.data()}');
   }
 
   Future<List<UserModel>> getAllUsers() async {
@@ -50,5 +49,12 @@ class FirestoreHelper {
     } catch (e) {
       print(e);
     }
+  }
+
+  updateProfile(UserModel userModel) async {
+    firebaseFirestore
+        .collection('Users')
+        .doc(userModel.id)
+        .update(HashMap.from(userModel.toMap()));
   }
 }

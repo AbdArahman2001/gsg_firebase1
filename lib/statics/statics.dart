@@ -3,4 +3,5 @@ class Statics {
   static final statics = Statics._();
   final authScreenRoute = '/authScreenRoute';
   final homePageScreenRoute = '/homePageScreenRoute';
+  final editProfileRoute = '/editProfileScreenRoute';
 }

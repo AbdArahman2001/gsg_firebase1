@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gsg_firebase1/Auth/models/user_model.dart';
+import 'package:gsg_firebase1/Auth/ui/widgets/single_row_info.dart';
 
 class UserInfoCard extends StatelessWidget {
   final UserModel userModel;
@@ -10,6 +11,8 @@ class UserInfoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       margin: EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      elevation: 8,
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 16, horizontal: 12),
         child: DefaultTextStyle(
@@ -18,10 +21,12 @@ class UserInfoCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                child: FadeInImage(
-                    placeholder:
-                        ExactAssetImage('assets/images/placeHolder.png'),
-                    image: NetworkImage(userModel.imageUrl)),
+                alignment: Alignment.center,
+                margin: EdgeInsets.all(12),
+                child: CircleAvatar(
+                  backgroundImage: NetworkImage(userModel.imageUrl),
+                  radius: 80,
+                ),
               ),
               SingleInfoRow('First Name: ', userModel.fName),
               SingleInfoRow('Last Name: ', userModel.lName),
@@ -31,30 +36,6 @@ class UserInfoCard extends StatelessWidget {
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class SingleInfoRow extends StatelessWidget {
-  final String field;
-  final String value;
-  SingleInfoRow(this.field, this.value);
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: [
-          Text(
-            field,
-            style: TextStyle(fontSize: 22),
-          ),
-          Text(
-            value,
-            style: TextStyle(fontSize: 20, color: Colors.blue),
-          ),
-        ],
       ),
     );
   }

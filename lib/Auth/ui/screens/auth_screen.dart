@@ -37,16 +37,19 @@ class _AuthScreenState extends State<AuthScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      GestureDetector(
-                        onTap: authProvider.pickImage,
-                        child: Container(
-                          width: MediaQuery.of(context).size.width * 0.5,
-                          height: MediaQuery.of(context).size.height * 0.3,
-                          child: authProvider.pickedImage != null
-                              ? Image.file(authProvider.pickedImage)
-                              : Container(
-                                  color: Colors.grey,
-                                ),
+                      Visibility(
+                        visible: authProvider.loginState == LoginState.signUp,
+                        child: GestureDetector(
+                          onTap: authProvider.pickImage,
+                          child: Container(
+                            width: MediaQuery.of(context).size.width * 0.5,
+                            height: MediaQuery.of(context).size.height * 0.3,
+                            child: authProvider.pickedImage != null
+                                ? Image.file(authProvider.pickedImage)
+                                : Container(
+                                    color: Colors.grey,
+                                  ),
+                          ),
                         ),
                       ),
                       CustomTextField(authProvider.emailController, 'Email'),

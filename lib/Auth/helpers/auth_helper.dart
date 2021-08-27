@@ -84,4 +84,8 @@ class AuthHelper {
       CustomDialog.customDialog.showCustomDialog('error when reset password');
     }
   }
+
+  Future<User> getCurrentUser() async {
+    return auth.currentUser;
+  }
 }
